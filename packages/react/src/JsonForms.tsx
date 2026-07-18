@@ -31,6 +31,7 @@ import {
   Generate,
   Id,
   isControl,
+  useAjv,
   JsonFormsCellRendererRegistryEntry,
   JsonFormsCore,
   JsonFormsI18nState,
@@ -202,7 +203,6 @@ export const JsonForms = (
   props: JsonFormsInitStateProps & JsonFormsReactProps
 ) => {
   const {
-    ajv,
     data,
     schema,
     uischema,
@@ -217,6 +217,7 @@ export const JsonForms = (
     additionalErrors,
     middleware,
   } = props;
+  const ajv = useAjv();
   const schemaToUse = useMemo(
     () => (schema !== undefined ? schema : Generate.jsonSchema(data)),
     [schema, data]

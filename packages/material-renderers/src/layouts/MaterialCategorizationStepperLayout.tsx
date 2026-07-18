@@ -37,6 +37,7 @@ import {
   rankWith,
   StatePropsOfLayout,
   uiTypeIs,
+  useAjv,
 } from '@jsonforms/core';
 import {
   TranslateProps,
@@ -88,9 +89,9 @@ export const MaterialCategorizationStepperLayoutRenderer = (
     visible,
     cells,
     config,
-    ajv,
     t,
   } = props;
+  const ajv = useAjv();
   const categorization = uischema as Categorization;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const buttonWrapperStyle = {

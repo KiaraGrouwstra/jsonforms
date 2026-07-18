@@ -36,6 +36,7 @@ import {
   Tester,
   UISchemaElement,
   uiTypeIs,
+  useAjv,
 } from '@jsonforms/core';
 import {
   TranslateProps,
@@ -97,9 +98,9 @@ export const MaterialCategorizationLayoutRenderer = (
     selected,
     onChange,
     config,
-    ajv,
     t,
   } = props;
+  const ajv = useAjv();
   const categorization = uischema as Categorization;
   const [previousCategorization, setPreviousCategorization] =
     useState<Categorization>(uischema as Categorization);
