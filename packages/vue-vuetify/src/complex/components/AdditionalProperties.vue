@@ -300,8 +300,21 @@ export default defineComponent({
       // TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
       // propertyNames exist in draft-6 but not defined in the JsonSchema
       if (typeof (control.value.schema as any).propertyNames === 'object') {
+        // The nested `json-forms` below mounts this schema as its OWN root, so a
+        // `$ref` on `propertyNames` (which points into the PARENT root's
+        // `$defs`) would be unresolvable there. Resolve it against the real root
+        // schema first, so the nested form gets a self-contained subschema.
+        let propertyNames = (control.value.schema as any).propertyNames;
+        if (typeof propertyNames.$ref === 'string') {
+          propertyNames =
+            Resolve.schema(
+              control.value.rootSchema,
+              propertyNames.$ref,
+              control.value.rootSchema,
+            ) ?? propertyNames;
+        }
         result = {
-          ...(control.value.schema as any).propertyNames,
+          ...propertyNames,
           ...result,
         };
       } else if (
