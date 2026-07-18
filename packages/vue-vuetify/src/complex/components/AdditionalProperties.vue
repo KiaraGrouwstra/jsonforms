@@ -109,6 +109,7 @@ import {
 import {
   DispatchRenderer,
   JsonForms,
+  useAjv,
   useJsonForms,
   useJsonFormsControlWithDetail,
   useTranslator,
@@ -409,8 +410,16 @@ export default defineComponent({
       validationMode: parentValidationMode,
       i18n,
       middleware,
-      ajv,
     } = useJsonForms();
+    // The nested `json-forms` this renderer mounts for the new-property-name
+    // input must reuse the parent form's AJV. That AJV lives at
+    // `jsonforms.core.ajv` (exposed by `useAjv`), NOT as a top-level `ajv` on the
+    // injected `JsonFormsSubStates` -- reading it off `useJsonForms()` yielded
+    // `undefined`, so the nested form silently built its own default AJV. That
+    // default rejects `pattern`s a spec-compliant validator accepts (AJV enables
+    // the `u` flag by default, unlike the JSON Schema spec), so a map keyed on a
+    // type whose key `pattern` is only valid without `u` failed to render.
+    const ajv = useAjv();
 
     // if the new property name is not specified then hide any errors
     const validationMode = computed(() =>
